@@ -50,29 +50,32 @@ for category in agents commands skills; do
   fi
 done
 
-# ── GSD patches ───────────────────────────────────────────────────────────────
-# Apply local modifications to GSD workflows, substituting the hardcoded home
-# path so they work on any machine. Skipped silently if GSD isn't installed.
+# ── GSD ───────────────────────────────────────────────────────────────────────
+# Install GSD if not present, then apply local patches.
 
 GSD_DIR=~/.claude/get-shit-done
 PATCHES_DIR="$REPO_DIR/patches/gsd"
 
+if [ ! -d "$GSD_DIR" ]; then
+  echo "  GSD not found — installing via npx..."
+  npx -y get-shit-done-cc@latest --global
+  echo "  installed GSD"
+else
+  echo "  GSD already installed ($(cat "$GSD_DIR/VERSION" 2>/dev/null || echo "unknown version"))"
+fi
+
+# Apply patches with home path substitution so they work on any machine.
 if [ -d "$PATCHES_DIR" ]; then
-  if [ ! -d "$GSD_DIR" ]; then
-    echo "  skipping GSD patches — GSD not installed (~/.claude/get-shit-done not found)"
-    echo "  Install GSD first, then re-run ./install.sh to apply patches."
-  else
-    while IFS= read -r -d '' patch_file; do
-      rel="${patch_file#$PATCHES_DIR/}"
-      target="$GSD_DIR/$rel"
-      if [ ! -f "$target" ]; then
-        echo "  skipping patches/gsd/$rel — target not found in GSD install"
-      else
-        sed "s|/home/edouard-gouilliard|$HOME|g" "$patch_file" > "$target"
-        echo "  patched gsd/$rel"
-      fi
-    done < <(find "$PATCHES_DIR" -type f -print0)
-  fi
+  while IFS= read -r -d '' patch_file; do
+    rel="${patch_file#$PATCHES_DIR/}"
+    target="$GSD_DIR/$rel"
+    if [ ! -f "$target" ]; then
+      echo "  skipping patches/gsd/$rel — target not found in GSD install"
+    else
+      sed "s|/home/edouard-gouilliard|$HOME|g" "$patch_file" > "$target"
+      echo "  patched gsd/$rel"
+    fi
+  done < <(find "$PATCHES_DIR" -type f -print0)
 fi
 
 echo ""
