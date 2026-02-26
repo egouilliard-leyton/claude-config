@@ -1,0 +1,39 @@
+---
+allowed-tools: Read, Glob, Bash
+description: Prime agent with codebase context
+---
+
+## Architecture Overview
+
+Tangara is a multi-backend e-commerce SPA (React 18 + Vite + TypeScript):
+
+- **Medusa** — Products catalog, carts, orders (has its own Stripe integration for product payments)
+- **Supabase** — Coaching sessions, camps, auth, user profiles, database (Edge Functions handle Stripe for session/camp payments)
+- **WordPress** — Blog posts, FAQ, static pages (REST API, headless)
+
+All three backends coexist in a single React frontend with shared UI (shadcn/ui + Tailwind).
+
+---
+
+Read these files to understand the codebase before starting work:
+
+1. `CLAUDE.md` - Project conventions and patterns
+2. `package.json` - Scripts and dependencies
+3. `.env.example` - Environment variables for all three backends
+4. `src/App.tsx` - Full routing map of the SPA
+5. `src/integrations/supabase/client.ts` - Supabase client singleton & project config
+6. `src/lib/medusa.ts` - Medusa SDK client & cart persistence
+7. `src/lib/wordpress.ts` - WordPress REST API client
+8. `src/contexts/StripeContext.tsx` - Stripe provider setup (sessions/camps payments)
+9. `src/components/AuthProvider.tsx` - Supabase auth state management
+10. `src/hooks/use-shopping-cart.tsx` - Cart adapter over Medusa
+11. `src/database-schema.sql` - Full Supabase database schema
+12. `supabase/functions/webhook-handler/index.ts` - Stripe webhook processing
+13. `supabase/functions/email-dispatcher/index.ts` - Email engine with templates
+
+Then run:
+```bash
+npm run build
+```
+
+Confirm the build passes before proceeding.
