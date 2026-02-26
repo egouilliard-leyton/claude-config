@@ -48,6 +48,90 @@ To update template files in an existing project after `git pull`:
 /update-claude
 ```
 
+## Workflow
+
+This is the recommended way to use these tools day-to-day.
+
+### Step 1 — Bootstrap a project (once per repo)
+
+Open Claude Code in your project and run:
+
+```
+/init-claude
+```
+
+This generates three project-specific files by analysing your codebase:
+- `.claude/commands/prime.md` — loads codebase context at the start of each session
+- `.claude/commands/validate.md` — runs build + lint + tests
+- `.claude/settings.local.json` — pre-approved permissions for your stack
+
+### Step 2 — Prime your context (start of each session)
+
+```
+/prime
+```
+
+Reads the key files in your codebase so Claude understands the architecture before you start work.
+
+### Step 3 — Plan a feature
+
+```
+/plan_local <what you want to build>
+```
+
+You can pass a short description or a path to a PRD file:
+
+```
+/plan_local add user authentication with OAuth
+/plan_local path/to/feature.prd.md
+```
+
+Claude will:
+- Explore the codebase for existing patterns to follow
+- Design the agent team (frontend, backend, tester-unit, tester-e2e, etc.)
+- Write a detailed plan to `.agents/plans/{name}.plan.md`
+- Output the exact command to execute it, e.g.:
+  ```
+  /build-with-agent-team .agents/plans/user-auth.plan.md 4
+  ```
+
+### Step 4 — Execute the plan (fresh Claude instance)
+
+**Open a new Claude Code instance** (important — gives a clean context window), then run the command from Step 3:
+
+```
+/build-with-agent-team .agents/plans/user-auth.plan.md 4
+```
+
+The number at the end is the agent count from the plan. Claude will:
+1. Create a git branch `plan/user-auth`
+2. Spawn the agent team in tmux split panes
+3. Orchestrate contracts between agents (backend publishes its API before frontend builds against it)
+4. Run end-to-end validation when all agents complete
+5. Open a PR automatically
+
+### Step 5 — Validate
+
+```
+/validate
+```
+
+Runs build, lint, and tests. Use this after any significant change to confirm nothing is broken.
+
+---
+
+## Keeping your config up to date
+
+When new skills, templates, or GSD patches are pushed to this repo:
+
+```
+/update-claude-config
+```
+
+This pulls the latest from GitHub and re-applies everything. No manual steps needed.
+
+---
+
 ## Verification
 
 After running `install.sh`, confirm setup:
