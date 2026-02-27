@@ -308,32 +308,25 @@ Do NOT report done until all validations pass.
 
 ### Lead Validation (End-to-End)
 
-After ALL agents return control to you, run end-to-end validation yourself. This catches integration issues that individual agents can't see.
+After ALL agents return control to you, run end-to-end validation using the `e2e-test` skill. This catches integration issues that individual agents can't see and validates every user journey with screenshots and database checks.
 
-**Your validation checklist:**
+```
+Skill("e2e-test")
+```
 
-1. **Can the system start?**
-   - Start all services (database, backend, frontend)
-   - No startup errors
-
-2. **Does the happy path work?**
-   - Walk through the primary user flow
-   - Each step produces expected results
-
-3. **Do integrations connect?**
-   - Frontend successfully calls backend
-   - Backend successfully queries database
-   - Data flows correctly through all layers
-
-4. **Are edge cases handled?**
-   - Empty states render correctly
-   - Error states display user-friendly messages
-   - Loading states appear during async operations
+The e2e-test skill will:
+1. Research all user journeys, database schema, and potential bugs in parallel
+2. Start the dev server and verify it loads
+3. Walk through every user-facing flow with browser automation
+4. Validate database state after each interaction
+5. Fix issues found and re-test
+6. Test responsive layouts across mobile, tablet, and desktop
+7. Generate a full report with screenshots and findings
 
 If validation fails:
-- Identify which agent's domain contains the bug
+- Identify which agent's domain contains the bug from the e2e report
 - Re-spawn that agent with the specific issue
-- Re-run validation after fix
+- Re-run `e2e-test` after fix
 
 ### Validation in the Plan
 
@@ -425,7 +418,7 @@ Now read the plan at `$ARGUMENTS[0]` and begin:
 8. **Forward verified contracts to downstream agents** — include in their spawn prompt
 9. Spawn downstream agents with verified contracts + their validation checklist
 10. **Run contract diff before integration** — compare backend's curl commands vs frontend's fetch URLs
-11. When all agents return, run **end-to-end validation yourself** (start both servers, use agent-browser for UI testing)
+11. When all agents return, run **end-to-end validation** using `Skill("e2e-test")` — it handles server startup, browser automation, DB validation, and reporting
 12. If validation fails, re-spawn the relevant agent with the specific issue
 13. Confirm the build meets the plan's requirements
 14. **Run Step 7 post-build automation**: update CLAUDE.md (7a), refresh codebase docs (7b), create PR (7c)
