@@ -39,6 +39,15 @@ Transform the input into a battle-tested implementation plan through codebase ex
 
 ## Phase 2: EXPLORE
 
+### Load Accumulated Knowledge
+
+Before exploring, check if a knowledge base exists from previous `/retro` sessions:
+
+1. If `.claude/knowledge/gotchas.md` exists, read it — incorporate known pitfalls into risk analysis (Phase 5 DESIGN risk table)
+2. If `.claude/knowledge/patterns.md` exists, read it — reuse proven patterns instead of rediscovering them
+
+Factor these learnings into your DESIGN phase risk table and pattern references.
+
 ### Study the Codebase
 
 Use the Explore agent to find:

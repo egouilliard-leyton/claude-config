@@ -41,6 +41,13 @@ Read the plan document at `$ARGUMENTS[0]`. Understand:
 - What technologies are involved?
 - What are the dependencies between components?
 
+### Load Agent Playbook
+
+If `.claude/knowledge/agent-playbook.md` exists, read it. Use past team insights to inform:
+- Team sizing decisions (Step 2)
+- Spawn order preferences (Step 4)
+- Known contract pitfalls for this project
+
 ## Step 2: Determine Team Structure
 
 If team size is specified (`$ARGUMENTS[1]`), use that number of agents.
@@ -401,6 +408,16 @@ Spawn all 4 in a single message (parallel). Wait for all 4 to complete and repor
    - PR body: plan summary + acceptance criteria as a checklist
 5. Report the PR URL to the user.
 
+### 7d — Session Retrospective
+
+Run the retro command to capture learnings from this build session:
+
+```
+/retro {plan-name}
+```
+
+This extracts patterns, gotchas, and agent team insights from the session and persists them to `.claude/knowledge/` for future sessions.
+
 ---
 
 ## Execute
@@ -421,4 +438,4 @@ Now read the plan at `$ARGUMENTS[0]` and begin:
 11. When all agents return, run **end-to-end validation** using `Skill("e2e-test")` — it handles server startup, browser automation, DB validation, and reporting
 12. If validation fails, re-spawn the relevant agent with the specific issue
 13. Confirm the build meets the plan's requirements
-14. **Run Step 7 post-build automation**: update CLAUDE.md (7a), refresh codebase docs (7b), create PR (7c)
+14. **Run Step 7 post-build automation**: update CLAUDE.md (7a), refresh codebase docs (7b), create PR (7c), session retro (7d)

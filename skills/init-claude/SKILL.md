@@ -131,6 +131,8 @@ Confirm the build passes before proceeding.
 - Brief description for each file (what it contains, not what to do with it)
 - Build command at the end using the detected package manager
 - Architecture overview should be 3-5 lines, factual, no fluff
+- If `.claude/knowledge/` exists (created by `/retro`), include it in the file list:
+  `{N}. .claude/knowledge/ - Accumulated learnings from past sessions (patterns, gotchas, agent playbook)`
 
 ## Step 5: Generate `validate.md`
 
