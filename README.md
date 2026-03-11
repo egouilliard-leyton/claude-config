@@ -9,7 +9,7 @@ Shared Claude Code configuration — skills and templates for bootstrapping any 
 | `skills/init-claude/` | `/init-claude` — bootstraps a `.claude/` directory in any project |
 | `skills/update-claude/` | `/update-claude` — refreshes template files in an existing project |
 | `templates/agents/` | 6 general-purpose agent definitions (code-reviewer, pr-test-analyzer, …) |
-| `templates/commands/` | 10+ commands (commit, create-pr, review-pr, implement, plan, …) |
+| `templates/commands/` | 11+ commands (commit, create-pr, review-pr, implement, plan_local, retro, …) |
 | `templates/skills/` | agent-browser, build-with-agent-team, update-claude |
 
 ## Installation
@@ -109,6 +109,7 @@ The number at the end is the agent count from the plan. Claude will:
 3. Orchestrate contracts between agents (backend publishes its API before frontend builds against it)
 4. Run end-to-end validation when all agents complete
 5. Open a PR automatically
+6. Run `/retro` to capture session learnings to `.claude/knowledge/` (for future `/prime` and `/plan_local`)
 
 ### Step 5 — Validate
 
@@ -117,6 +118,16 @@ The number at the end is the agent count from the plan. Claude will:
 ```
 
 Runs build, lint, and tests. Use this after any significant change to confirm nothing is broken.
+
+### Session retrospectives — `/retro`
+
+After a work session (or at the end of a build), run:
+
+```
+/retro [session-label]
+```
+
+This analyzes the session (git diff, plan file, conversation context), extracts patterns, gotchas, and agent-team insights, and appends them to `.claude/knowledge/` (patterns, gotchas, agent-playbook). Future sessions loading `/prime` or running `/plan_local` will use this accumulated knowledge. If you omit the label, the current branch name is used.
 
 ---
 
